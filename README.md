@@ -1,5 +1,3 @@
-# Knife-steel-properties-ML-analysis
-
 # Knife Steel Properties: Machine-Learning Analysis
 
 A reproducible Python pipeline for predicting knife-steel toughness,
