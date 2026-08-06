@@ -13,11 +13,11 @@ prices, and generating comparative tables and visualizations.
 
 ## Main Scripts
 
-- `predict_steel_properties.py`: trains the models and predicts steel properties.
-- `scrape_bladehq.py`: collects prices from Blade HQ.
-- `scrape_knifecenter.py`: collects prices from KnifeCenter.
-- `scrape_bladescanada.py`: collects prices from Blades Canada.
-- `main.py`: generates the final tables and visualizations.
+- `python codes/predict_steel_properties.py`: trains the models and predicts steel properties.
+- `python codes/scrape_bladehq.py`: collects prices from Blade HQ.
+- `python codes/scrape_knifecenter.py`: collects prices from KnifeCenter.
+- `python codes/scrape_bladescanada.py`: collects prices from Blades Canada.
+- `python codes/main.py`: generates the final tables and visualizations.
 
 ## Installation
 
@@ -36,23 +36,29 @@ python -m playwright install chromium
 
 Price collection is optional:
 
-```bash
-python scrape_bladehq.py
-python scrape_knifecenter.py
-python scrape_bladescanada.py
+```powershell
+python "python codes/scrape_bladehq.py"
+python "python codes/scrape_knifecenter.py"
+python "python codes/scrape_bladescanada.py"
 ```
 
 Run the prediction model:
 
-```bash
-python predict_steel_properties.py
+```powershell
+python "python codes/predict_steel_properties.py"
 ```
 
 Generate the final results:
 
-```bash
-python main.py
+```powershell
+python "python codes/main.py"
 ```
+
+## Example Outputs
+
+![Observed knife-steel performance](results/knife_steels_main.png)
+
+![Price versus quality](results/price_vs_quality.png)
 
 ## Data Sources
 
