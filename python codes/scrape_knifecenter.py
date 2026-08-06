@@ -218,17 +218,25 @@ STEEL_SLUG_OVERRIDES: dict[str, str] = {
     "Z-Tuff": "z-tuff",
 }
 
-BASE_DIR = Path(__file__).resolve().parent
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
 
-PRICE_WORKBOOK = BASE_DIR / "steel_price_data.xlsx"
+DATA_DIR = PROJECT_ROOT / "data"
+CACHE_ROOT = PROJECT_ROOT / ".cache"
+
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+CACHE_ROOT.mkdir(parents=True, exist_ok=True)
+
+PRICE_WORKBOOK = DATA_DIR / "steel_price_data.xlsx"
 
 SHEET_RAW = "KC_Raw"
 SHEET_SUMMARY = "KC_Summary"
 SHEET_UNRESOLVED = "KC_Unresolved"
 SHEET_STATUS = "KC_Status"
 
-CACHE_DIR = BASE_DIR / "cache_knifecenter"
-CACHE_DIR.mkdir(exist_ok=True)
+CACHE_DIR = CACHE_ROOT / "knifecenter"
+
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 PRE_REQUEST_DELAY_RANGE = (10.0, 20.0)
 POST_PAGE_DELAY_RANGE = (10.0, 20.0)
