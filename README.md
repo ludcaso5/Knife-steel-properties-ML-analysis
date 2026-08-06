@@ -58,8 +58,6 @@ python "python codes/main.py"
 
 ![Observed knife-steel performance](results/knife_steels_main.png)
 
-![Price versus quality](results/price_vs_quality.png)
-
 ## Data Sources
 
 Steel-property ratings are primarily based on Knife Steel Nerds and the Blade
