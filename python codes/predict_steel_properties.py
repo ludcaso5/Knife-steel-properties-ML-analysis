@@ -26,14 +26,18 @@ from sklearn.svm import SVR
 
 
 # Paths
-BASE_DIR = Path(__file__).resolve().parent
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+
+DATA_DIR = PROJECT_ROOT / "data"
+CACHE_DIR = PROJECT_ROOT / ".cache"
+
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Single persistent workbook used as both input and output.
 # Observed rows train the models; rows marked "(predicted)" are refreshed.
-MASTER_FILE = (
-    BASE_DIR
-    / "steel_model_results.xlsx"
-)
+MASTER_FILE = DATA_DIR / "steel_model_results.xlsx"
 
 BASE_FILE = MASTER_FILE
 OUTPUT_FILE = MASTER_FILE
@@ -60,7 +64,7 @@ SEARCH_PRE_DISPATCH = GRID_SEARCH_N_JOBS
 USE_MODEL_CACHE = True
 FORCE_RETRAIN = False
 MODEL_CACHE_VERSION = 1
-MODEL_CACHE_FILE = BASE_DIR / "steel_ml_model_cache.joblib"
+MODEL_CACHE_FILE = CACHE_DIR / "steel_ml_model_cache.joblib"
 
 MIMIC_FINAL_POSTPROCESSING_IN_VALIDATION = True
 
@@ -203,7 +207,7 @@ class ModelSpec:
 
 def read_table(path: Path) -> pd.DataFrame:
     if path.suffix.lower() in {".xlsx", ".xlsm", ".xls"}:
-        return pd.read_excel(path, sheet_name="Resultats_1")
+        return pd.read_excel(path, sheet_name=0)
     return pd.read_csv(path, sep=";")
 
 
@@ -288,10 +292,10 @@ def load_prediction_data(base_df: pd.DataFrame) -> pd.DataFrame:
 
     if not predicted_mask.any():
         raise ValueError(
-            f'No row marked "(predicted)" was found in the '
-            f'Resultats_1 sheet of {MASTER_FILE.name}. '
-            'Add new compositions directly to that sheet and append '
-            '"(predicted)" to their Steel name.'
+            f'No row marked "(predicted)" was found in '
+            f'the first worksheet of {MASTER_FILE.name}. '
+            'Add new compositions directly to that worksheet and append '
+            '"(predicted)" to the steel name.'
         )
 
     pred_df = base_df.loc[predicted_mask].copy()
@@ -934,25 +938,41 @@ def write_results_excel(
     prediction_details: pd.DataFrame,
     output_path: Path,
 ) -> None:
-    model_sheet_names = {
-        "Resultats_1",
-        "NestedCV_top3_weights",
-        "NestedCV_metrics",
-        "NestedCV_fold_details",
-        "FinalSearch_best_params",
-        "Prediction_details",
-    }
+model_sheet_names = {
+    "Results_1",
+    "NestedCV_top3_weights",
+    "NestedCV_metrics",
+    "NestedCV_fold_details",
+    "FinalSearch_best_params",
+    "Prediction_details",
+}
 
-    obsolete_sheet_names = {
-        "Optimizer_candidates",
-        "Optimizer_Resultats_1",
-        "Optimizer_baseline",
-        "Optimizer_weights",
-        "Optimizer_bounds",
-        "Optimizer_settings",
-    }
+preserved_sheets: dict[str, pd.DataFrame] = {}
 
-    preserved_sheets: dict[str, pd.DataFrame] = {}
+if output_path.exists():
+    with pd.ExcelFile(output_path) as existing_book:
+        current_results_sheet = (
+            existing_book.sheet_names[0]
+            if existing_book.sheet_names
+            else None
+        )
+
+        for sheet in existing_book.sheet_names:
+            # The first worksheet contains the main steel results and
+            # is replaced below, regardless of its previous name.
+            if sheet == current_results_sheet:
+                continue
+
+            if sheet in model_sheet_names:
+                continue
+
+            if sheet.startswith("Optimizer_"):
+                continue
+
+            preserved_sheets[sheet] = pd.read_excel(
+                existing_book,
+                sheet_name=sheet,
+            )
 
     if output_path.exists():
         with pd.ExcelFile(output_path) as existing_book:
@@ -974,7 +994,7 @@ def write_results_excel(
     )
 
     with pd.ExcelWriter(output_path, engine="xlsxwriter") as writer:
-        sheet_name = "Resultats_1"
+        sheet_name = "Results_1"
         df.to_excel(writer, sheet_name=sheet_name, index=False)
         validation_sheet.to_excel(writer, sheet_name="NestedCV_top3_weights")
         validation_metrics.to_excel(writer, sheet_name="NestedCV_metrics", index=False)
