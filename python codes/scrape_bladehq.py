@@ -74,17 +74,25 @@ STEEL_GROUPS: dict[str, list[str]] = {
     "Z-Tuff": ["Z-Tuff"],
 }
 
-BASE_DIR = Path(__file__).resolve().parent
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
 
-PRICE_WORKBOOK = BASE_DIR / "steel_price_data.xlsx"
+DATA_DIR = PROJECT_ROOT / "data"
+CACHE_ROOT = PROJECT_ROOT / ".cache"
+
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+CACHE_ROOT.mkdir(parents=True, exist_ok=True)
+
+PRICE_WORKBOOK = DATA_DIR / "steel_price_data.xlsx"
 
 SHEET_RAW = "BHQ_Raw"
 SHEET_SUMMARY = "BHQ_Summary"
 SHEET_UNMATCHED = "BHQ_Unmatched"
 
-CHECKPOINT_JSON = BASE_DIR / "bladehq_checkpoint.json"
-CACHE_DIR = BASE_DIR / "bladehq_cache"
-CACHE_DIR.mkdir(exist_ok=True)
+CHECKPOINT_JSON = CACHE_ROOT / "bladehq_checkpoint.json"
+CACHE_DIR = CACHE_ROOT / "bladehq"
+
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
