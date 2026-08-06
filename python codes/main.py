@@ -11,20 +11,22 @@ from matplotlib.lines import Line2D
 
 
 # Paths
-BASE_DIR = Path(__file__).resolve().parent
-FILE_MAIN = BASE_DIR / "steel_model_results.xlsx"
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
 
-OUT_MAIN_PNG = BASE_DIR / "knife_steels_main.png"
-OUT_PRED_PNG = BASE_DIR / "others_predicted_steels.png"
-OUT_PRICE_PNG = BASE_DIR / "price_vs_quality.png"
-OUT_MAIN_QUALITY_TABLE_PNG = (
-    BASE_DIR / "main_steels_table.png"
-)
+DATA_DIR = PROJECT_ROOT / "data"
+RESULTS_DIR = PROJECT_ROOT / "results"
 
-OUT_PRED_QUALITY_TABLE_PNG = (
-    BASE_DIR / "predicted_steels_table.png"
-)
-OUT_COMPOSITION_TABLE_PNG = BASE_DIR / "steel_composition_table.png"
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+
+FILE_MAIN = DATA_DIR / "steel_model_results.xlsx"
+
+OUT_MAIN_PNG = RESULTS_DIR / "knife_steels_main.png"
+OUT_PRED_PNG = RESULTS_DIR / "others_predicted_steels.png"
+OUT_PRICE_PNG = RESULTS_DIR / "price_vs_quality.png"
+OUT_MAIN_QUALITY_TABLE_PNG = RESULTS_DIR / "main_steels_table.png"
+OUT_PRED_QUALITY_TABLE_PNG = RESULTS_DIR / "predicted_steels_table.png"
+OUT_COMPOSITION_TABLE_PNG = RESULTS_DIR / "steel_composition_table.png"
 
 
 # results table and graphs theme
@@ -543,7 +545,7 @@ def make_scatter_chart(
     legend_elements = [
         Line2D([0], [0], marker="o", color="w", label="Corrosion ≤ 5.5",
                markerfacecolor=CORROSION_COLORS["low"], markeredgecolor=THEME["highlight"], markersize=12),
-        Line2D([0], [0], marker="o", color="w", label="Corrosion 5.6 à 7.4",
+        Line2D([0], [0], marker="o", color="w", label="Corrosion 5.6 to 7.4",
                markerfacecolor=CORROSION_COLORS["mid_low"], markeredgecolor=THEME["highlight"], markersize=12),
         Line2D([0], [0], marker="o", color="w", label="Corrosion 7.5 à 8.9",
                markerfacecolor=CORROSION_COLORS["mid_high"], markeredgecolor=THEME["highlight"], markersize=12),
@@ -1006,7 +1008,7 @@ def export_composition_table_png(df_table: pd.DataFrame, output_path: Path) -> N
     ax.text(
         0.005,
         0.995,
-        "Tech indicates PM / Ingot / mixed process exactly as written in the CSV.",
+        "Tech indicates PM, ingot, or mixed production as recorded in the source workbook.",
         transform=ax.transAxes,
         fontsize=9.5,
         va="bottom",
@@ -1058,7 +1060,7 @@ def main():
 
     make_scatter_chart(
         df=df_pred,
-        title="Others predicted steels",
+        title="Other Predicted Steels",
         output_path=OUT_PRED_PNG,
         top_n=5,
         include_comment=False,
