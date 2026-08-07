@@ -13,11 +13,11 @@ prices, and generating comparative tables and visualizations.
 
 ## Main Scripts
 
-- `python codes/predict_steel_properties.py`: trains the models and predicts steel properties.
-- `python codes/scrape_bladehq.py`: collects prices from Blade HQ.
-- `python codes/scrape_knifecenter.py`: collects prices from KnifeCenter.
-- `python codes/scrape_bladescanada.py`: collects prices from Blades Canada.
-- `python codes/main.py`: generates the final tables and visualizations.
+- `src/predict_steel_properties.py`: trains the models and predicts steel properties.
+- `src/scrape_bladehq.py`: collects prices from Blade HQ.
+- `src/scrape_knifecenter.py`: collects prices from KnifeCenter.
+- `src/scrape_bladescanada.py`: collects prices from Blades Canada.
+- `src/main.py`: generates the final tables and visualizations.
 
 ## Installation
 
@@ -37,21 +37,21 @@ python -m playwright install chromium
 Price collection is optional:
 
 ```powershell
-python "python codes/scrape_bladehq.py"
-python "python codes/scrape_knifecenter.py"
-python "python codes/scrape_bladescanada.py"
+python src/scrape_bladehq.py
+python src/scrape_knifecenter.py
+python src/scrape_bladescanada.py
 ```
 
 Run the prediction model:
 
 ```powershell
-python "python codes/predict_steel_properties.py"
+python src/predict_steel_properties.py
 ```
 
 Generate the final results:
 
 ```powershell
-python "python codes/main.py"
+python src/main.py
 ```
 
 ## Example Outputs
