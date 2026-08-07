@@ -938,53 +938,40 @@ def write_results_excel(
     prediction_details: pd.DataFrame,
     output_path: Path,
 ) -> None:
-model_sheet_names = {
-    "Results_1",
-    "NestedCV_top3_weights",
-    "NestedCV_metrics",
-    "NestedCV_fold_details",
-    "FinalSearch_best_params",
-    "Prediction_details",
-}
+    model_sheet_names = {
+        "Results_1",
+        "NestedCV_top3_weights",
+        "NestedCV_metrics",
+        "NestedCV_fold_details",
+        "FinalSearch_best_params",
+        "Prediction_details",
+    }
 
-preserved_sheets: dict[str, pd.DataFrame] = {}
-
-if output_path.exists():
-    with pd.ExcelFile(output_path) as existing_book:
-        current_results_sheet = (
-            existing_book.sheet_names[0]
-            if existing_book.sheet_names
-            else None
-        )
-
-        for sheet in existing_book.sheet_names:
-            # The first worksheet contains the main steel results and
-            # is replaced below, regardless of its previous name.
-            if sheet == current_results_sheet:
-                continue
-
-            if sheet in model_sheet_names:
-                continue
-
-            if sheet.startswith("Optimizer_"):
-                continue
-
-            preserved_sheets[sheet] = pd.read_excel(
-                existing_book,
-                sheet_name=sheet,
-            )
+    preserved_sheets: dict[str, pd.DataFrame] = {}
 
     if output_path.exists():
         with pd.ExcelFile(output_path) as existing_book:
+            current_results_sheet = (
+                existing_book.sheet_names[0]
+                if existing_book.sheet_names
+                else None
+            )
+
             for sheet in existing_book.sheet_names:
-                if (
-                        sheet not in model_sheet_names
-                        and sheet not in obsolete_sheet_names
-                ):
-                    preserved_sheets[sheet] = pd.read_excel(
-                        existing_book,
-                        sheet_name=sheet,
-                    )
+                if sheet == current_results_sheet:
+                    continue
+
+                if sheet in model_sheet_names:
+                    continue
+
+                if sheet.startswith("Optimizer_"):
+                    continue
+
+                preserved_sheets[sheet] = pd.read_excel(
+                    existing_book,
+                    sheet_name=sheet,
+                )
+
     validation_sheet = pd.concat(
         {
             "NestedRepeatedCV_RMSE": rmse_table,
