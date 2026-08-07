@@ -21,12 +21,13 @@ prices, and generating comparative tables and visualizations.
 
 ## Installation
 
-```bash
+```powershell
 git clone https://github.com/ludcaso5/Knife-steel-properties-ML-analysis.git
 cd Knife-steel-properties-ML-analysis
 
 python -m venv .venv
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
+
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m playwright install chromium
